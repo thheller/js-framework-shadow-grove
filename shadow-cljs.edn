@@ -1,0 +1,16 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"
+  "../../../shadow-experiments/src/main"]
+
+ :dependencies
+ [[thheller/shadow-experiments "0.0.3"]]
+
+ :builds
+ {:app
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :modules {:main {:init-fn bench.app/init}}}}}
