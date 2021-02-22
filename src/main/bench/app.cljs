@@ -148,7 +148,7 @@
                      :label (u/make-label)}]
            (db/add db ::item item [::items])))
        db
-       (range 10000))}))
+       (range 1000))}))
 
 (ev/reg-event rt-ref ::update-some!
   (fn [{:keys [db] :as env} {:keys [id]}]

@@ -3,7 +3,7 @@
  ["src/dev"
   "src/main"
   "src/test"
-  "../../../shadow-experiments/src/main"]
+  "../../../../shadow-experiments/src/main"]
 
  :dependencies
  [[thheller/shadow-experiments "0.0.3"]]
@@ -13,4 +13,5 @@
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
+   :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.app/init}}}}}
