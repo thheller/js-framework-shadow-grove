@@ -12,7 +12,7 @@ I'll probably make a lower level variant using only `shadow-arborist` at some po
 - create (many) rows: expected to be slow because of setting up and running the EQL to get the data
 - replace all rows: I guess the warmup makes all the difference here. no clue how it could be faster than create otherwise
 - partial update: decent, slow because of EQL queries 
-- select row: terrible because of the EQL computing `::is-selected?` for every mounted query. 1,000 EQL queries executed to update one row.
+- select row: fast since computation is done in event handler instead of dynamic EQL attribute
 - swap rows: only has to update a vector via assoc (fast) and then swap two DOM nodes (also fast)
 - remove row: `render-seq` behavior terrible for removals
 - append: expected this to be slower but I guess it had enough warmup time when created the first 10,000.
