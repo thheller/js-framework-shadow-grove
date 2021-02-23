@@ -8,23 +8,16 @@
     [shadow.experiments.grove.local :as local]
     [bench.util :as u]))
 
-(defmethod eql/attr ::is-selected?
-  [env {::keys [selected] :as db} {:db/keys [ident] :as current} _ params]
-  (= selected ident))
-
 (defc row [row-ident]
-  (bind {::keys [is-selected?] :as data}
+  (bind {:keys [is-selected? id label] :as data}
     (sg/query-ident row-ident
-      [:id
-       :label
-       ::is-selected?]))
+      [:db/all]))
 
   (render
     (<< [:tr {:class (if is-selected? "danger" "")}
-         [:td.col-md-1 (:id data)]
+         [:td.col-md-1 id]
          [:td.col-md-4
-          [:a {:on-click {:e ::select! :id row-ident}}
-           (:label data)]]
+          [:a {:on-click {:e ::select! :id row-ident}} label]]
          [:td.col-md-1
           [:a {:on-click {:e ::delete! :id row-ident}}
            [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
@@ -177,7 +170,13 @@
 
 (ev/reg-event rt-ref ::select!
   (fn [{:keys [db] :as env} {:keys [id]}]
-    {:db (assoc db ::selected id)}))
+    (let [{::keys [selected]} db]
+      {:db (-> db
+               (assoc ::selected id)
+               (assoc-in [id :is-selected?] true)
+               (cond->
+                 selected
+                 (update selected dissoc :is-selected?)))})))
 
 (defn without [current id]
   (->> current
