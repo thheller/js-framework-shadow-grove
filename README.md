@@ -6,7 +6,7 @@ It is not meant to be a competitive benchmark. Results vary from 5 to 40 times s
 
 I'll probably make a lower level variant using only `shadow-arborist` at some point to be more in line with what the other "frameworks" do. A quick glance at some profiles show the majority of time spent is within all the data processing and very little in the actual "rendering". Results should look better when that is optimized.
 
-![Screenshot](2021-02-23--10-33.png)
+![Screenshot](2021-02-23--10-48.png)
 
 
 - create (many) rows: expected to be slow because of setting up and running the EQL to get the data
