@@ -1,4 +1,5 @@
-(ns bench.app
+(ns bench.full
+  "making full use of normalized DB and EQL queries"
   (:require
     [shadow.experiments.grove :as sg :refer (defc <<)]
     [shadow.experiments.grove.events :as ev]

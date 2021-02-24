@@ -9,9 +9,17 @@
  [[thheller/shadow-experiments "0.0.3"]]
 
  :builds
- {:app
+ {:full
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
    :compiler-options {:output-feature-set :es8}
-   :modules {:main {:init-fn bench.app/init}}}}}
+   :modules {:main {:init-fn bench.full/init}}}
+
+  :light
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :compiler-options {:output-feature-set :es8}
+   :modules {:main {:init-fn bench.light/init}}}
+  }}

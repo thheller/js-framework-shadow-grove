@@ -6,8 +6,8 @@
     "frameworkVersion": "0.0.3"
   },
   "scripts": {
-    "build-dev": "shadow-cljs watch app",
-    "build-prod": "shadow-cljs release app"
+    "build-dev": "shadow-cljs watch full",
+    "build-prod": "shadow-cljs release full"
   },
   "devDependencies": {
     "shadow-cljs": "2.11.18"
