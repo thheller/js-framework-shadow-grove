@@ -2,7 +2,20 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
-Lots of optimizations left to be done to make this competitive. Looks decent already.
+## 2021-02-26
+
+Happy with performance for now. Added a couple more impls for comparison. Any CLJS impls I missed?
+
+- `full` variant pays for faster update cycles by having slower mount/unmount since it has to hook up the EQL queries. There is lots of room left to make that faster overall.
+- `light` variant doesn't do EQL but `select row` is rather slow. Mostly of time is spent in `render-seq`. Likely that can be tweaked more but good enough for now. Easily escaped by skipping `render-seq` entirely and updating row directly as EQL variant does.
+
+### full
+
+![Screenshot](2021-02-26--17-25.png)
+
+### light
+
+![Screenshot](2021-02-26--17-19.png)
 
 ## 2021-02-25
 
