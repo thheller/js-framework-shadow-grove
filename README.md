@@ -2,6 +2,19 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+
+## 2021-02-27
+
+One more. Realized that all query indexing work can be delayed and moved it to async queue. Minor gain overall but I'll take it.
+
+### full
+
+![Screenshot](2021-02-27--11-51.png)
+
+### light
+
+unchanged since it doesn't use EQL queries
+
 ## 2021-02-26
 
 Happy with performance for now. Added a couple more impls for comparison. Any CLJS impls I missed?
