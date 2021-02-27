@@ -2,6 +2,18 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2021-02-27
+
+Saw another easy win in `clear rows` and couldn't resist taking it. Seems to be at the point where now more time is spent in event data processing than any DOM related update work.
+
+### full
+
+![Screenshot](2021-02-27--14-17.png)
+
+### light
+
+![Screenshot](2021-02-27--14-10.png)
+
 
 ## 2021-02-27
 
