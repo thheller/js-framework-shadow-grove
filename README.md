@@ -4,6 +4,14 @@ This is an implementation of of the [js-framework benchmark](https://github.com/
 
 ## 2021-03-01
 
+Last few simple query optimizations. At this point I should really start focusing on something more useful. This is fast enough now.
+
+### full
+
+![Screenshot](2021-03-01--15-41.png)
+
+## 2021-03-01
+
 Optimized `render-seq` a little more since we can exploit `identical?` checks to skip some work. Mostly affects `light` variant since that has to `render-seq` in `select row`.
 
 ### full

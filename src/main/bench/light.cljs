@@ -80,7 +80,7 @@
 
          [:table.table.table-hover.table-striped.test-data
           [:tbody
-           (sg/render-seq items :id row)]]
+           (sg/keyed-seq items :id row)]]
 
          [:span.preloadicon.glyphicon.glyphicon-remove
           {:aria-hidden "true"}]]))

@@ -4,15 +4,13 @@
     [shadow.experiments.grove :as sg :refer (defc <<)]
     [shadow.experiments.grove.events :as ev]
     [shadow.experiments.grove.db :as db]
-    [shadow.experiments.grove.eql-query :as eql]
     [shadow.experiments.grove.runtime :as rt]
     [shadow.experiments.grove.local :as local]
     [bench.util :as u]))
 
 (defc row [row-ident]
   (bind {:keys [is-selected? id label] :as data}
-    (sg/query-ident row-ident
-      [:db/all]))
+    (sg/query-ident row-ident))
 
   (render
     (<< [:tr {:class (if is-selected? "danger" "")}
@@ -85,7 +83,7 @@
 
          [:table.table.table-hover.table-striped.test-data
           [:tbody
-           (sg/render-seq items identity row)]]
+           (sg/keyed-seq items identity row)]]
 
          [:span.preloadicon.glyphicon.glyphicon-remove
           {:aria-hidden "true"}]])))
