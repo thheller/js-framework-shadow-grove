@@ -2,6 +2,19 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2021-03-01
+
+Optimized `render-seq` a little more since we can exploit `identical?` checks to skip some work. Mostly affects `light` variant since that has to `render-seq` in `select row`.
+
+### full
+
+![Screenshot](2021-03-01--11-19.png)
+
+### light
+
+![Screenshot](2021-03-01--11-18.png)
+
+
 ## 2021-02-27
 
 Saw another easy win in `clear rows` and couldn't resist taking it. Seems to be at the point where now more time is spent in event data processing than any DOM related update work.

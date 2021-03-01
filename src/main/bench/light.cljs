@@ -19,16 +19,15 @@
 
     (swap! data-ref assoc :items items)))
 
-(defc row [{:keys [is-selected? id label]} idx]
-  (render
-    (<< [:tr {:class (if is-selected? "danger" "")}
-         [:td.col-md-1 id]
-         [:td.col-md-4
-          [:a {:on-click {:e ::select! :idx idx}} label]]
-         [:td.col-md-1
-          [:a {:on-click {:e ::delete! :id id}}
-           [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
-         [:td.col-md-6]])))
+(defn row [{:keys [is-selected? id label]} idx]
+  (<< [:tr {:class (if is-selected? "danger" "")}
+       [:td.col-md-1 id]
+       [:td.col-md-4
+        [:a {:on-click {:e ::select! :idx idx}} label]]
+       [:td.col-md-1
+        [:a {:on-click {:e ::delete! :id id}}
+         [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
+       [:td.col-md-6]]))
 
 (defc ui-root []
   (bind items
