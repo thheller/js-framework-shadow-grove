@@ -6,6 +6,14 @@ This is an implementation of of the [js-framework benchmark](https://github.com/
 
 Last few simple query optimizations. At this point I should really start focusing on something more useful. This is fast enough now.
 
+Full Benchmark HTML reports:
+- https://code.thheller.com/demos/js-framework-benchmark/benchmark-full.html
+- https://code.thheller.com/demos/js-framework-benchmark/benchmark-light.html
+
+shadow-cljs Build Reports:
+- https://code.thheller.com/demos/js-framework-benchmark/full.html
+- https://code.thheller.com/demos/js-framework-benchmark/light.html
+
 ### full
 
 ![Screenshot](2021-03-01--15-41.png)
