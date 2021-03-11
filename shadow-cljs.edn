@@ -16,6 +16,13 @@
    :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.full/init}}}
 
+  :full-interpreted
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :compiler-options {:output-feature-set :es8}
+   :modules {:main {:init-fn bench.full-interpreted/init}}}
+
   :light
   {:target :browser
    :output-dir "dist"
