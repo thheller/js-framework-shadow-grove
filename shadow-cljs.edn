@@ -3,10 +3,10 @@
  ["src/dev"
   "src/main"
   "src/test"
-  "../../../../shadow-experiments/src/main"]
+  "../../../../shadow-grove/src/main"]
 
  :dependencies
- [[thheller/shadow-experiments "0.0.3"]]
+ [[com.thheller/shadow-grove "0.2.0"]]
 
  :builds
  {:full

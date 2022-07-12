@@ -1,99 +1,94 @@
 (ns bench.full
   "making full use of normalized DB and EQL queries"
   (:require
-    [shadow.experiments.grove :as sg :refer (defc <<)]
-    [shadow.experiments.grove.events :as ev]
-    [shadow.experiments.grove.db :as db]
-    [shadow.experiments.grove.runtime :as rt]
-    [shadow.experiments.grove.local :as local]
+    [shadow.grove :as sg :refer (defc <<)]
+    [shadow.grove.events :as ev]
+    [shadow.grove.db :as db]
+    [shadow.grove.runtime :as rt]
+    [shadow.grove.local :as local]
     [bench.util :as u]))
 
 (defc row [row-ident]
-  (bind {:keys [is-selected? id label] :as data}
+  (bind data
     (sg/query-ident row-ident))
 
   (render
-    (<< [:tr {:class (if is-selected? "danger" "")}
-         [:td.col-md-1 id]
-         [:td.col-md-4
-          [:a {:on-click {:e ::select! :id row-ident}} label]]
-         [:td.col-md-1
-          [:a {:on-click {:e ::delete! :id row-ident}}
-           [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
-         [:td.col-md-6]])))
+    (let [{:keys [is-selected? id label]} data]
+      (<< [:tr {:class (if is-selected? "danger" "")}
+           [:td.col-md-1 id]
+           [:td.col-md-4
+            [:a {:on-click {:e ::select! :id row-ident}} label]]
+           [:td.col-md-1
+            [:a {:on-click {:e ::delete! :id row-ident}}
+             [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
+           [:td.col-md-6]]))))
 
 (defc ui-root []
-  (event ::run! sg/tx)
-  (event ::run-lots! sg/tx)
-  (event ::add! sg/tx)
-  (event ::update-some! sg/tx)
-  (event ::clear! sg/tx)
-  (event ::swap-rows! sg/tx)
-  (event ::select! sg/tx)
-  (event ::delete! sg/tx)
-
-  (bind {::keys [items]}
+  (bind data
     (sg/query-root
       [::items]))
 
   (render
-    (<< [:div.container
-         [:div.jumbotron
-          [:div.row
-           [:div.col-md-6
-            [:h1 "shadow-grove"]]
-           [:div.col-md-6
+    (let [{::keys [items]} data]
+      (<< [:div.container
+           [:div.jumbotron
             [:div.row
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "run"
-                :on-click {:e ::run!}}
-               "Create 1,000 rows"]]
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "runlots"
-                :on-click {:e ::run-lots!}}
-               "Create 10,000 rows"]]
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "add"
-                :on-click {:e ::add!}}
-               "Append 1,000 rows"]]
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "update"
-                :on-click {:e ::update-some!}}
-               "Update every 10th row"]]
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "clear"
-                :on-click {:e ::clear!}}
-               "Clear"]]
-             [:div.col-sm-6.smallpad
-              [:button.btn.btn-primary.btn-block
-               {:type "button"
-                :id "swaprows"
-                :on-click {:e ::swap-rows!}}
-               "Swap rows"]]]]]]
+             [:div.col-md-6
+              [:h1 "shadow-grove"]]
+             [:div.col-md-6
+              [:div.row
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "run"
+                  :on-click {:e ::run!}}
+                 "Create 1,000 rows"]]
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "runlots"
+                  :on-click {:e ::run-lots!}}
+                 "Create 10,000 rows"]]
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "add"
+                  :on-click {:e ::add!}}
+                 "Append 1,000 rows"]]
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "update"
+                  :on-click {:e ::update-some!}}
+                 "Update every 10th row"]]
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "clear"
+                  :on-click {:e ::clear!}}
+                 "Clear"]]
+               [:div.col-sm-6.smallpad
+                [:button.btn.btn-primary.btn-block
+                 {:type "button"
+                  :id "swaprows"
+                  :on-click {:e ::swap-rows!}}
+                 "Swap rows"]]]]]]
 
-         [:table.table.table-hover.table-striped.test-data
-          [:tbody
-           (sg/keyed-seq items identity row)]]
+           [:table.table.table-hover.table-striped.test-data
+            [:tbody
+             (sg/keyed-seq items identity row)]]
 
-         [:span.preloadicon.glyphicon.glyphicon-remove
-          {:aria-hidden "true"}]])))
+           [:span.preloadicon.glyphicon.glyphicon-remove
+            {:aria-hidden "true"}]]))))
 
-(defonce root-el (js/document.getElementById "main"))
+(defonce root-el
+  (js/document.getElementById "main"))
 
 (def schema
   {::item
    {:type :entity
-    :attrs {:id [:primary-key number?]}}})
+    :primary-key :id
+    :attrs {}}})
 
 (defonce data-ref
   (-> {::editing nil
@@ -110,72 +105,81 @@
       (assoc ::items [])))
 
 (ev/reg-event rt-ref ::run!
-  (fn [{:keys [db id-seq-ref] :as env}]
-    {:db
-     (reduce
-       (fn [db _]
-         (let [item {:id (swap! id-seq-ref inc)
-                     :label (u/make-label)}]
-           (db/add db ::item item [::items])))
-       (reset-db db)
-       (range 1000))}))
+  (fn [{:keys [id-seq-ref] :as env}]
+    (update env :db
+      (fn [db]
+        (reduce
+          (fn [db _]
+            (let [item {:id (swap! id-seq-ref inc)
+                        :label (u/make-label)}]
+              (db/add db ::item item [::items])))
+          (reset-db db)
+          (range 1000))))))
 
 (ev/reg-event rt-ref ::run-lots!
-  (fn [{:keys [db id-seq-ref] :as env}]
-    {:db
-     (reduce
-       (fn [db _]
-         (let [item {:id (swap! id-seq-ref inc)
-                     :label (u/make-label)}]
-           (db/add db ::item item [::items])))
-       (reset-db db)
-       (range 10000))}))
+  (fn [{:keys [id-seq-ref] :as env}]
+    (update env :db
+      (fn [db]
+        (reduce
+          (fn [db _]
+            (let [item {:id (swap! id-seq-ref inc)
+                        :label (u/make-label)}]
+              (db/add db ::item item [::items])))
+          (reset-db db)
+          (range 10000))))))
 
 (ev/reg-event rt-ref ::add!
-  (fn [{:keys [db id-seq-ref] :as env}]
-    {:db
-     (reduce
-       (fn [db _]
-         (let [item {:id (swap! id-seq-ref inc)
-                     :label (u/make-label)}]
-           (db/add db ::item item [::items])))
-       db
-       (range 1000))}))
+  (fn [{:keys [id-seq-ref] :as env}]
+    (update env :db
+      (fn [db]
+        (reduce
+          (fn [db _]
+            (let [item {:id (swap! id-seq-ref inc)
+                        :label (u/make-label)}]
+              (db/add db ::item item [::items])))
+          db
+          (range 1000))))))
 
 (ev/reg-event rt-ref ::update-some!
-  (fn [{:keys [db] :as env} {:keys [id]}]
-    (let [{::keys [items]} db
-          to-update (range 0 (count items) 10)]
-      {:db (reduce
-             (fn [db idx]
-               (let [ident (nth items idx)]
-                 (update-in db [ident :label] str " !!!")))
-             db
-             to-update)})))
+  (fn [env {:keys [id]}]
+    (update env :db
+      (fn [db]
+        (let [{::keys [items]} db
+              to-update (range 0 (count items) 10)]
+          (reduce
+            (fn [db idx]
+              (let [ident (nth items idx)]
+                (update-in db [ident :label] str " !!!")))
+            db
+            to-update))))))
 
 (ev/reg-event rt-ref ::swap-rows!
-  (fn [{:keys [db] :as env} {:keys [id]}]
-    (let [{::keys [items]} db
+  (fn [env {:keys [id]}]
+    (update env :db
+      (fn [db]
+        (let [{::keys [items]} db
 
-          front-idx 1
-          back-idx 998
+              front-idx 1
+              back-idx 998
 
-          front (get items front-idx)
-          back (get items back-idx)]
+              front (get items front-idx)
+              back (get items back-idx)]
 
-      {:db (-> db
-               (assoc-in [::items front-idx] back)
-               (assoc-in [::items back-idx] front))})))
+          (-> db
+              (assoc-in [::items front-idx] back)
+              (assoc-in [::items back-idx] front)))))))
 
 (ev/reg-event rt-ref ::select!
-  (fn [{:keys [db] :as env} {:keys [id]}]
-    (let [{::keys [selected]} db]
-      {:db (-> db
-               (assoc ::selected id)
-               (assoc-in [id :is-selected?] true)
-               (cond->
-                 selected
-                 (update selected dissoc :is-selected?)))})))
+  (fn [env {:keys [id]}]
+    (update env :db
+      (fn [db]
+        (let [{::keys [selected]} db]
+          (-> db
+              (assoc ::selected id)
+              (assoc-in [id :is-selected?] true)
+              (cond->
+                selected
+                (update selected dissoc :is-selected?))))))))
 
 (defn without [current id]
   (->> current
@@ -183,22 +187,27 @@
        (into [])))
 
 (ev/reg-event rt-ref ::delete!
-  (fn [{:keys [db] :as env} {:keys [id]}]
-    {:db (-> db
-             (db/remove id)
-             (update ::items without id))}))
+  (fn [env {:keys [id]}]
+    (update env :db
+      (fn [db]
+        (-> db
+            (db/remove id)
+            (update ::items without id))))))
 
 (ev/reg-event rt-ref ::clear!
-  (fn [{:keys [db] :as env} _]
-    {:db (-> (reduce db/remove db (db/all-idents-of db ::item))
-             (assoc ::items []))}))
+  (fn [env _]
+    (update env :db
+      (fn [db]
+        (-> (reduce db/remove db (db/all-idents-of db ::item))
+            (assoc ::items []))))))
 
-(defn ^:dev/after-load start []
-  (sg/start ::ui root-el (ui-root)))
+(defn render []
+  (sg/render rt-ref root-el (ui-root)))
 
 (defn init []
-  (sg/init ::ui
-    {}
-    [(local/init rt-ref)])
+  (local/init! rt-ref)
 
-  (start))
+  (render))
+
+(defn ^:dev/after-load reload! []
+  (render))
