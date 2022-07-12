@@ -1,5 +1,9 @@
 # shadow-grove benchmark
 
+It has been a while since I ran these. Performance shouldn't have changed much but js-framework-benchmark itself changed a lot and I can't seem to figure out how to get current results.
+
+# Outdated Numbers
+
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
 ## 2021-03-01

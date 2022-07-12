@@ -1,9 +1,9 @@
 {
   "name": "shadow-grove",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "private": true,
   "js-framework-benchmark": {
-    "frameworkVersion": "0.0.3"
+    "frameworkVersion": "0.2.0"
   },
   "scripts": {
     "build-dev": "shadow-cljs watch full",
