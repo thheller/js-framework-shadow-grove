@@ -10,6 +10,6 @@
     "build-prod": "shadow-cljs release full"
   },
   "devDependencies": {
-    "shadow-cljs": "2.19.5"
+    "shadow-cljs": "2.19.6"
   }
 }

@@ -2,9 +2,11 @@
 
 It has been a while since I ran these. Performance shouldn't have changed much but js-framework-benchmark itself changed a lot and I can't seem to figure out how to get current results.
 
-# Outdated Numbers
+## 2022-07-15
 
-This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
+Ran the benchmark against the current `js-framework-benchmark` for the `0.2.0` shadow-grove release. Also ran against most common used JS frameworks according to the [State of JS Survey](https://2021.stateofjs.com/en-US/libraries/front-end-frameworks). Numbers still look decent given that I haven't done any performance work since the last time I ran these. 
+
+![Screenshot](2022-07-15--18-44.png)
 
 ## 2021-03-01
 
