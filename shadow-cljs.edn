@@ -2,7 +2,8 @@
 {:source-paths
  ["src/dev"
   "src/main"
-  "src/test"]
+  "src/test"
+  "../../../../shadow-grove/src/main"]
 
  :dependencies
  [[com.thheller/shadow-grove "0.2.0"]]

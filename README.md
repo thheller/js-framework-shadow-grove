@@ -2,6 +2,13 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2022-07-16
+
+Should stop playing these benchmark games. There are some interesting cases to consider and a lot of room for improvement, but also far more important things to take care of first.
+
+![Screenshot](2022-07-16--18-31.png)
+
+
 ## 2022-07-15
 
 Ran the benchmark against the current `js-framework-benchmark` for the `0.2.0` shadow-grove release. Also ran against most common used JS frameworks according to the [State of JS Survey](https://2021.stateofjs.com/en-US/libraries/front-end-frameworks). Numbers still look decent given that I haven't done any performance work since the last time I ran these. 

@@ -194,12 +194,37 @@
             (db/remove id)
             (update ::items without id))))))
 
+;; this is playing benchmark games a bit, but it highlights an interesting case
+;; in the "clear rows" benchmark
+
+;; if we remove all items immediately there are still 1000 active queries,
+;; which all get invalidated since the ident they used got removed.
+;; they never get to run their update, but even just the invalidation
+;; more than doubles the time spent.
+;; if we instead just set ::items [] the queries will all unmount
+;; and the :run-after actual removal then has much less work to do since
+;; the 1000 queries are already gone and no invalidation needs to be done.
+
+;; not doing this is not the end of the world. the query invalidation is actually
+;; fast enough to not worry. but it is still something to think about.
+;; wonder if that can be handled automatically in some way? maybe smarter
+;; scheduling can cover this somehow?
 (ev/reg-event rt-ref ::clear!
   (fn [env _]
+    (-> env
+        (ev/queue-fx :run-after {:e ::clear-idents! :idents (get-in env [:db ::items])})
+        (update :db assoc ::items [])
+        )))
+
+(ev/reg-fx rt-ref :run-after
+  (fn [{:keys [transact!] :as env} e]
+    (transact! e)))
+
+(ev/reg-event rt-ref ::clear-idents!
+  (fn [env {:keys [idents]}]
     (update env :db
       (fn [db]
-        (-> (reduce db/remove db (db/all-idents-of db ::item))
-            (assoc ::items []))))))
+        (reduce db/remove db idents)))))
 
 (defn render []
   (sg/render rt-ref root-el (ui-root)))
