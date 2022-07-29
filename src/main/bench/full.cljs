@@ -2,10 +2,8 @@
   "making full use of normalized DB and EQL queries"
   (:require
     [shadow.grove :as sg :refer (defc <<)]
-    [shadow.grove.events :as ev]
     [shadow.grove.db :as db]
     [shadow.grove.runtime :as rt]
-    [shadow.grove.local :as local]
     [bench.util :as u]))
 
 (defc row [row-ident]
@@ -98,13 +96,13 @@
 
 (defonce rt-ref
   (-> {:id-seq-ref (atom 0)}
-      (rt/prepare data-ref ::db)))
+      (sg/prepare data-ref ::db)))
 
 (defn reset-db [{::keys [items] :as db}]
   (-> (reduce db/remove db items)
       (assoc ::items [])))
 
-(ev/reg-event rt-ref ::run!
+(sg/reg-event rt-ref ::run!
   (fn [{:keys [id-seq-ref] :as env}]
     (update env :db
       (fn [db]
@@ -116,7 +114,7 @@
           (reset-db db)
           (range 1000))))))
 
-(ev/reg-event rt-ref ::run-lots!
+(sg/reg-event rt-ref ::run-lots!
   (fn [{:keys [id-seq-ref] :as env}]
     (update env :db
       (fn [db]
@@ -128,7 +126,7 @@
           (reset-db db)
           (range 10000))))))
 
-(ev/reg-event rt-ref ::add!
+(sg/reg-event rt-ref ::add!
   (fn [{:keys [id-seq-ref] :as env}]
     (update env :db
       (fn [db]
@@ -140,7 +138,7 @@
           db
           (range 1000))))))
 
-(ev/reg-event rt-ref ::update-some!
+(sg/reg-event rt-ref ::update-some!
   (fn [env {:keys [id]}]
     (update env :db
       (fn [db]
@@ -153,7 +151,7 @@
             db
             to-update))))))
 
-(ev/reg-event rt-ref ::swap-rows!
+(sg/reg-event rt-ref ::swap-rows!
   (fn [env {:keys [id]}]
     (update env :db
       (fn [db]
@@ -169,7 +167,7 @@
               (assoc-in [::items front-idx] back)
               (assoc-in [::items back-idx] front)))))))
 
-(ev/reg-event rt-ref ::select!
+(sg/reg-event rt-ref ::select!
   (fn [env {:keys [id]}]
     (update env :db
       (fn [db]
@@ -186,7 +184,7 @@
        (remove #(= id %))
        (into [])))
 
-(ev/reg-event rt-ref ::delete!
+(sg/reg-event rt-ref ::delete!
   (fn [env {:keys [id]}]
     (update env :db
       (fn [db]
@@ -209,18 +207,18 @@
 ;; fast enough to not worry. but it is still something to think about.
 ;; wonder if that can be handled automatically in some way? maybe smarter
 ;; scheduling can cover this somehow?
-(ev/reg-event rt-ref ::clear!
+(sg/reg-event rt-ref ::clear!
   (fn [env _]
     (-> env
-        (ev/queue-fx :run-after {:e ::clear-idents! :idents (get-in env [:db ::items])})
+        (sg/queue-fx :run-after {:e ::clear-idents! :idents (get-in env [:db ::items])})
         (update :db assoc ::items [])
         )))
 
-(ev/reg-fx rt-ref :run-after
+(sg/reg-fx rt-ref :run-after
   (fn [{:keys [transact!] :as env} e]
     (transact! e)))
 
-(ev/reg-event rt-ref ::clear-idents!
+(sg/reg-event rt-ref ::clear-idents!
   (fn [env {:keys [idents]}]
     (update env :db
       (fn [db]
@@ -230,8 +228,6 @@
   (sg/render rt-ref root-el (ui-root)))
 
 (defn init []
-  (local/init! rt-ref)
-
   (render))
 
 (defn ^:dev/after-load reload! []
