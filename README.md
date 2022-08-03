@@ -2,6 +2,21 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+
+## 2022-08-03
+
+Just a quick check what the numbers look like after API cleanup. Did another Light run as well, looks decent. Main overhead still in EQL/DB indexing it seems.
+
+### Full
+
+![Screenshot](2022-08-03--23-00.png)
+
+### Light
+
+![Screenshot](2022-08-03--23-08.png)
+
+
+
 ## 2022-07-16
 
 Should stop playing these benchmark games. There are some interesting cases to consider and a lot of room for improvement, but also far more important things to take care of first.

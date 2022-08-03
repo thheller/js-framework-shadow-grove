@@ -1,9 +1,8 @@
 (ns bench.light
   "no normlized DB or EQL queries, lowest lvl that is still convenient"
   (:require
-    [shadow.experiments.grove :as sg :refer (defc <<)]
-    [shadow.experiments.grove.events :as ev]
-    [shadow.experiments.grove.db :as db]
+    [shadow.grove :as sg :refer (defc <<)]
+    [shadow.grove.runtime :as rt]
     [bench.util :as u]))
 
 (defn make-items [{:keys [id-seq-ref] :as env} num]
@@ -141,19 +140,31 @@
              (remove #(= id (:id %)))
              (vec))))))
 
-(defonce root-el (js/document.getElementById "main"))
+(defonce root-el
+  (js/document.getElementById "main"))
 
-(defn ^:dev/after-load start []
-  (sg/start ::ui root-el (ui-root)))
+(def schema
+  {::item
+   {:type :entity
+    :primary-key :id
+    :attrs {}}})
 
 (defonce data-ref
   (-> {:editing nil
        :items []}
       (atom)))
 
+(defonce rt-ref
+  (-> {}
+      (sg/prepare data-ref ::db)))
+
+(defn render []
+  (sg/render rt-ref root-el (ui-root)))
+
 (defn init []
-  (sg/init ::ui
-    {:id-seq-ref (atom 0)
-     :data-ref data-ref}
-    [])
-  (start))
+  (swap! rt-ref update ::rt/env-init conj (fn [env] (assoc env :id-seq-ref (atom 0)
+                                                               :data-ref data-ref)))
+  (render))
+
+(defn ^:dev/after-load reload! []
+  (render))
