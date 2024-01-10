@@ -6,7 +6,7 @@
   "../../../../shadow-grove/src/main"]
 
  :dependencies
- [[com.thheller/shadow-grove "0.4.0"]]
+ [[com.thheller/shadow-grove "0.5.1"]]
 
  ;; default server on 8080 for some reason doesn't find results file
  ;; http://localhost:8001/webdriver-ts-results/table.html this works
@@ -34,4 +34,11 @@
    :asset-path "dist"
    :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.light/init}}}
+
+  :ultralight
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :compiler-options {:output-feature-set :es8}
+   :modules {:main {:init-fn bench.ultralight/init}}}
   }}

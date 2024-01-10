@@ -1,6 +1,6 @@
 {
   "name": "shadow-grove",
-  "version": "0.2.0",
+  "version": "0.5.1",
   "private": true,
   "js-framework-benchmark": {
     "frameworkVersion": "0.2.0"
@@ -10,6 +10,6 @@
     "build-prod": "shadow-cljs release full"
   },
   "devDependencies": {
-    "shadow-cljs": "2.19.8"
+    "shadow-cljs": "2.26.3"
   }
 }
