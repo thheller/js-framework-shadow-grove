@@ -2,6 +2,16 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2024-01-11
+
+Just some updated numbers to see how things have developed in the meantime. svelte is cheating it seems, gotta look into what they are doing.
+
+### Ultralight
+
+No Grove, Components or DB. Just atom rendered from the root. Closest featureset in comparison to everything else.
+
+![Screenshot](Screenshot 2024-01-11 230150.png)
+
 
 ## 2022-08-03
 
