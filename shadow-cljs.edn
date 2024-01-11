@@ -3,7 +3,7 @@
  ["src/dev"
   "src/main"
   "src/test"
-  "../../../../shadow-grove/src/main"]
+  "../shadow-grove/src/main"]
 
  :dependencies
  [[com.thheller/shadow-grove "0.5.1"]]
@@ -21,13 +21,6 @@
    :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.full/init}}}
 
-  :full-interpreted
-  {:target :browser
-   :output-dir "dist"
-   :asset-path "dist"
-   :compiler-options {:output-feature-set :es8}
-   :modules {:main {:init-fn bench.full-interpreted/init}}}
-
   :light
   {:target :browser
    :output-dir "dist"
@@ -41,4 +34,12 @@
    :asset-path "dist"
    :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.ultralight/init}}}
+
+  :ultralight-interpreted
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :compiler-options {:output-feature-set :es8
+                      :shadow-optimize-constants true}
+   :modules {:main {:init-fn bench.ultralight-interpreted/init}}}
   }}
