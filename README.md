@@ -2,6 +2,14 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2024-02-07
+
+### Ultralight Interpreted
+
+No Components or DB. Just atom rendered from the root in pure interpreted Hiccup. No fragments. This is now actually competitive and no longer laughably slow because of a bug.
+
+![Screenshot](Screenshot-2024-02-07-114445.png)
+
 ## 2024-01-11
 
 Just some updated numbers to see how things have developed in the meantime. svelte is cheating it seems, gotta look into what they are doing.

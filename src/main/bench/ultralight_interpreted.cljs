@@ -30,57 +30,66 @@
      [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
    [:td.col-md-6]])
 
+(def header
+  [:div.jumbotron
+   [:div.row
+    [:div.col-md-6
+     [:h1 "shadow-grove"]]
+    [:div.col-md-6
+     [:div.row
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "run"
+         :on-click {:e ::run!}}
+        "Create 1,000 rows"]]
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "runlots"
+         :on-click {:e ::run-lots!}}
+        "Create 10,000 rows"]]
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "add"
+         :on-click {:e ::add!}}
+        "Append 1,000 rows"]]
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "update"
+         :on-click {:e ::update-some!}}
+        "Update every 10th row"]]
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "clear"
+         :on-click {:e ::clear!}}
+        "Clear"]]
+      [:div.col-sm-6.smallpad
+       [:button.btn.btn-primary.btn-block
+        {:type "button"
+         :id "swaprows"
+         :on-click {:e ::swap-rows!}}
+        "Swap rows"]]]]]])
+
+(def icon-remove
+  [:span.preloadicon.glyphicon.glyphicon-remove
+   {:aria-hidden "true"}])
+
 (defn ui-root [{:keys [items] :as data}]
   [:div.container
-   [:div.jumbotron
-    [:div.row
-     [:div.col-md-6
-      [:h1 "shadow-grove"]]
-     [:div.col-md-6
-      [:div.row
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "run"
-          :on-click {:e ::run!}}
-         "Create 1,000 rows"]]
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "runlots"
-          :on-click {:e ::run-lots!}}
-         "Create 10,000 rows"]]
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "add"
-          :on-click {:e ::add!}}
-         "Append 1,000 rows"]]
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "update"
-          :on-click {:e ::update-some!}}
-         "Update every 10th row"]]
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "clear"
-          :on-click {:e ::clear!}}
-         "Clear"]]
-       [:div.col-sm-6.smallpad
-        [:button.btn.btn-primary.btn-block
-         {:type "button"
-          :id "swaprows"
-          :on-click {:e ::swap-rows!}}
-         "Swap rows"]]]]]]
+
+   ;; by pulling this out into a def it'll stay identical and save a lot of hiccup diffing
+   ;; substantially boosting perf for this benchmark
+   header
 
    [:table.table.table-hover.table-striped.test-data
     [:tbody
      (sg/keyed-seq items :id row)]]
 
-   [:span.preloadicon.glyphicon.glyphicon-remove
-    {:aria-hidden "true"}]])
+   icon-remove])
 
 (defonce root-el
   (js/document.getElementById "main"))

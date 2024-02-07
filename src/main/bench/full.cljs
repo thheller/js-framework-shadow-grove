@@ -11,7 +11,7 @@
     (sg/query-ident row-ident))
 
   (render
-    (let [{:keys [is-selected? id label]} data]
+    (let [{:keys [is-selected? ^:text id ^:text label]} data]
       (<< [:tr {:class (if is-selected? "danger" "")}
            [:td.col-md-1 id]
            [:td.col-md-4
