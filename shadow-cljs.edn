@@ -18,28 +18,23 @@
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
-   :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.full/init}}}
 
   :light
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
-   :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.light/init}}}
 
   :ultralight
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
-   :compiler-options {:output-feature-set :es8}
    :modules {:main {:init-fn bench.ultralight/init}}}
 
   :ultralight-interpreted
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
-   :compiler-options {:output-feature-set :es8
-                      :shadow-optimize-constants true}
    :modules {:main {:init-fn bench.ultralight-interpreted/init}}}
   }}
