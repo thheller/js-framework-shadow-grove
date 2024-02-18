@@ -1,17 +1,6 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["src/dev"
-  "src/main"
-  "src/test"
-  "../shadow-grove/src/main"]
-
- :dependencies
- [[com.thheller/shadow-grove "0.6.0"]]
-
- ;; default server on 8080 for some reason doesn't find results file
- ;; http://localhost:8001/webdriver-ts-results/table.html this works
- :dev-http
- {8001 "."}
+{:deps
+ {:aliases [:dev]}
 
  :builds
  {:full
@@ -19,6 +8,12 @@
    :output-dir "dist"
    :asset-path "dist"
    :modules {:main {:init-fn bench.full/init}}}
+
+  :ops
+  {:target :browser
+   :output-dir "dist"
+   :asset-path "dist"
+   :modules {:main {:init-fn bench.operators/init}}}
 
   :light
   {:target :browser
@@ -36,5 +31,6 @@
   {:target :browser
    :output-dir "dist"
    :asset-path "dist"
+   ;; :compiler-options {:shadow-optimize-constants true}
    :modules {:main {:init-fn bench.ultralight-interpreted/init}}}
   }}

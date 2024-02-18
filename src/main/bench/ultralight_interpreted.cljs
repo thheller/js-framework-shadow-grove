@@ -153,12 +153,17 @@
          ::select!
          (swap! data-ref
            (fn [{:keys [selected] :as db}]
-             (-> db
-                 (assoc :selected (:idx event))
-                 (assoc-in [:items (:idx event) :is-selected?] true)
-                 (cond->
-                   selected
-                   (update-in [:items selected] dissoc :is-selected?)))))
+             (let [idx (:idx event)]
+               (if (= selected idx)
+                 (-> db
+                     (dissoc :selected)
+                     (update-in [:items idx] dissoc :is-selected?))
+                 (-> db
+                     (assoc :selected idx)
+                     (assoc-in [:items idx :is-selected?] true)
+                     (cond->
+                       selected
+                       (update-in [:items selected] dissoc :is-selected?)))))))
 
          ::delete!
          (swap! data-ref update :items

@@ -1,0 +1,14 @@
+{:paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :deps
+ {com.thheller/shadow-grove {:mvn/version "0.6.0"}}
+
+ :aliases
+ {:dev
+  {:replace-deps
+   {com.thheller/shadow-grove {:local/root "../shadow-grove"}}
+   :extra-deps
+   {thheller/shadow-cljs {:mvn/version "2.27.4"}}}}}
