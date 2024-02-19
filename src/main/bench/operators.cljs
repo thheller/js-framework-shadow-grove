@@ -82,7 +82,7 @@
             (when (< idx (count items))
 
               (let [other (op/get-other op &item (nth items idx))]
-                (op/call other ::update-text!))
+                (other ::update-text!))
 
               (recur (+ 10 idx))
               )))))))
@@ -103,7 +103,7 @@
 
     (op/handle op ::delete!
       (fn []
-        (op/call list-op ::remove-item! id)))
+        (list-op ::remove-item! id)))
 
     (op/handle op ::update-text!
       (fn []
@@ -125,9 +125,9 @@
       (<< [:tr {:class (if is-selected? "danger" "")}
            [:td.col-md-1 id]
            [:td.col-md-4
-            [:a {:on-click #(op/call selected-op ::toggle! id)} label]]
+            [:a {:on-click #(selected-op ::toggle! id)} label]]
            [:td.col-md-1
-            [:a {:on-click #(op/call item-op ::delete!)}
+            [:a {:on-click #(item-op ::delete!)}
              [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
            [:td.col-md-6]]))))
 
@@ -150,37 +150,37 @@
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "run"
-                :on-click #(op/call list-op ::run!)}
+                :on-click #(list-op ::run!)}
                "Create 1,000 rows"]]
              [:div.col-sm-6.smallpad
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "runlots"
-                :on-click #(op/call list-op ::run-lots!)}
+                :on-click #(list-op ::run-lots!)}
                "Create 10,000 rows"]]
              [:div.col-sm-6.smallpad
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "add"
-                :on-click #(op/call list-op ::add!)}
+                :on-click #(list-op ::add!)}
                "Append 1,000 rows"]]
              [:div.col-sm-6.smallpad
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "update"
-                :on-click #(op/call list-op ::update-some!)}
+                :on-click #(list-op ::update-some!)}
                "Update every 10th row"]]
              [:div.col-sm-6.smallpad
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "clear"
-                :on-click #(op/call list-op ::clear!)}
+                :on-click #(list-op ::clear!)}
                "Clear"]]
              [:div.col-sm-6.smallpad
               [:button.btn.btn-primary.btn-block
                {:type "button"
                 :id "swaprows"
-                :on-click #(op/call list-op ::swap-rows!)}
+                :on-click #(list-op ::swap-rows!)}
                "Swap rows"]]]]]]
 
          [:table.table.table-hover.table-striped.test-data
