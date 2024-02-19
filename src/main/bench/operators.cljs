@@ -5,27 +5,7 @@
     [shadow.grove.operator :as op]
     [bench.util :as u]))
 
-(defn without [current id]
-  (->> current
-       (remove #(= id %))
-       (into [])))
-
 (declare &item)
-
-(defn &selected [op _]
-  (op/handle op ::toggle!
-    (fn [nval]
-      (let [oval @op]
-
-        (if (= oval nval)
-          (do (op/call (op/get-other op &item oval) ::deselect!)
-              (reset! op nil))
-
-          (do (when oval
-                (op/call (op/get-other op &item oval) ::deselect!))
-
-              (op/call (op/get-other op &item nval) ::select!)
-              (reset! op nval)))))))
 
 (defn &items [op _]
   (let [id-seq-ref
@@ -37,12 +17,21 @@
                (mapv
                  (fn [_]
                    (let [id (swap! id-seq-ref inc)]
-                     (op/get-other op &item id)
-                     id
-                     )))))]
+                     (op/link-other op &item id))))))
+
+        selected-ref
+        (atom nil)]
+
+    (op/handle op ::set-selected!
+      (fn [item-op]
+        (when-some [selected-op @selected-ref]
+          (when (not= selected-op item-op)
+            (selected-op ::deselect!)))
+        (reset! selected-ref item-op)))
 
     (op/handle op ::clear!
       (fn [_]
+        (op/unlink-all op @op)
         (reset! op [])))
 
     (op/handle op ::add!
@@ -51,15 +40,28 @@
 
     (op/handle op ::run!
       (fn []
+        (reset! selected-ref nil)
+        (op/unlink-all op @op)
         (reset! op (make-todos 1000))))
 
     (op/handle op ::run-lots!
       (fn []
+        (reset! selected-ref nil)
+        (op/unlink-all op @op)
         (reset! op (make-todos 10000))))
 
     (op/handle op ::remove-item!
-      (fn [id]
-        (swap! op without id)))
+      (fn [item-to-remove]
+        (swap! op
+          (fn [items]
+            (reduce
+              (fn [acc item]
+                (if-not (identical? item item-to-remove)
+                  (conj acc item)
+                  (do (op/unlink-other op item)
+                      acc)))
+              []
+              items)))))
 
     (op/handle op ::swap-rows!
       (fn []
@@ -81,7 +83,7 @@
           (loop [idx 0]
             (when (< idx (count items))
 
-              (let [other (op/get-other op &item (nth items idx))]
+              (let [other (nth items idx)]
                 (other ::update-text!))
 
               (recur (+ 10 idx))
@@ -93,9 +95,16 @@
     ;; since these are all randomly generated we might as well do that on init
     (reset! op {:id id :label (u/make-label)})
 
-    (op/handle op ::select!
+    (op/handle op ::toggle-selected!
       (fn []
-        (swap! op assoc :is-selected? true)))
+        (swap! op
+          (fn [{:keys [is-selected?] :as state}]
+
+            ;; FIXME: side effect in swap! bad
+            ;; not actually in CLJS but a problem if ever ported to CLJ
+            (list-op ::set-selected! (if is-selected? nil op))
+
+            (update state :is-selected? not)))))
 
     (op/handle op ::deselect!
       (fn []
@@ -103,29 +112,24 @@
 
     (op/handle op ::delete!
       (fn []
-        (list-op ::remove-item! id)))
+        (list-op ::remove-item! op)))
 
     (op/handle op ::update-text!
       (fn []
         (swap! op update :label str " !!!")))
     ))
 
-(defc row [item-id]
-  (bind item-op
-    (op/use &item item-id))
 
+(defc row [item-op]
   (bind item
     (sg/watch item-op))
-
-  (bind selected-op
-    (op/use &selected))
 
   (render
     (let [{:keys [^boolean is-selected? ^:text id ^:text label]} item]
       (<< [:tr {:class (if is-selected? "danger" "")}
            [:td.col-md-1 id]
            [:td.col-md-4
-            [:a {:on-click #(selected-op ::toggle! id)} label]]
+            [:a {:on-click #(item-op ::toggle-selected!)} label]]
            [:td.col-md-1
             [:a {:on-click #(item-op ::delete!)}
              [:span.glyphicon.glyphicon-remove {:aria-hidden "true"}]]]
@@ -185,7 +189,7 @@
 
          [:table.table.table-hover.table-striped.test-data
           [:tbody
-           (sg/keyed-seq items identity row)]]
+           (sg/keyed-seq items op/op-key row)]]
 
          [:span.preloadicon.glyphicon.glyphicon-remove
           {:aria-hidden "true"}]])))
