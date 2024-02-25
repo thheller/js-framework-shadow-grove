@@ -8,7 +8,7 @@
 
  :aliases
  {:dev
-  {:replace-deps
+  {:override-deps
    {com.thheller/shadow-grove {:local/root "../shadow-grove"}}
    :extra-deps
    {thheller/shadow-cljs {:mvn/version "2.27.4"}}}}}

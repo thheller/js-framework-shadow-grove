@@ -17,7 +17,7 @@
                (mapv
                  (fn [_]
                    (let [id (swap! id-seq-ref inc)]
-                     (op/link-other op &item id))))))
+                     (op/get-other op &item id))))))
 
         selected-ref
         (atom nil)]
@@ -31,41 +31,40 @@
 
     (op/handle op ::clear!
       (fn [_]
-        (op/unlink-all op @op)
         (reset! op [])))
 
     (op/handle op ::add!
       (fn []
-        (swap! op into (make-todos 1000))))
+        (op/update! op into (make-todos 1000))))
 
     (op/handle op ::run!
       (fn []
         (reset! selected-ref nil)
-        (op/unlink-all op @op)
         (reset! op (make-todos 1000))))
 
     (op/handle op ::run-lots!
       (fn []
         (reset! selected-ref nil)
-        (op/unlink-all op @op)
         (reset! op (make-todos 10000))))
 
     (op/handle op ::remove-item!
       (fn [item-to-remove]
-        (swap! op
+        (when (identical? item-to-remove @selected-ref)
+          (reset! selected-ref nil))
+
+        (op/update! op
           (fn [items]
             (reduce
               (fn [acc item]
                 (if-not (identical? item item-to-remove)
                   (conj acc item)
-                  (do (op/unlink-other op item)
-                      acc)))
+                  acc))
               []
               items)))))
 
     (op/handle op ::swap-rows!
       (fn []
-        (swap! op
+        (op/update! op
           (fn [items]
             (let [front-idx 1
                   back-idx 998
@@ -90,25 +89,21 @@
               )))))))
 
 (defn &item [op id]
-  (let [list-op (op/link-other op &items)]
+  (let [list-op (op/get-other op &items)]
 
     ;; since these are all randomly generated we might as well do that on init
     (reset! op {:id id :label (u/make-label)})
 
     (op/handle op ::toggle-selected!
       (fn []
-        (swap! op
+        (op/update! op
           (fn [{:keys [is-selected?] :as state}]
-
-            ;; FIXME: side effect in swap! bad
-            ;; not actually in CLJS but a problem if ever ported to CLJ
             (list-op ::set-selected! (if is-selected? nil op))
-
             (update state :is-selected? not)))))
 
     (op/handle op ::deselect!
       (fn []
-        (swap! op assoc :is-selected? false)))
+        (op/update! op assoc :is-selected? false)))
 
     (op/handle op ::delete!
       (fn []
@@ -116,7 +111,7 @@
 
     (op/handle op ::update-text!
       (fn []
-        (swap! op update :label str " !!!")))
+        (op/update! op update :label str " !!!")))
     ))
 
 
