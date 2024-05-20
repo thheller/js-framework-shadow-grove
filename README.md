@@ -2,6 +2,20 @@
 
 This is an implementation of of the [js-framework benchmark](https://github.com/krausest/js-framework-benchmark) using [shadow-grove](https://github.com/thheller/shadow-experiments).
 
+## 2024-05-20
+
+### Full
+
+Latest run using everything. With latest `shadow.grove.kv` changes.
+
+![Screenshot](Screenshot-2024-05-20-175542.png)
+
+### Ultralight
+
+Components and KV still carry quite a bit of overhead when compared to this. Although it really doesn't matter, even the Full variant spends more time in the Browser rendering than actual JS.
+
+![Screenshot](Screenshot-2024-05-20-180645.png)
+
 ## 2024-02-07
 
 ### Ultralight Interpreted

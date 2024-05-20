@@ -4,11 +4,11 @@
   "src/test"]
 
  :deps
- {com.thheller/shadow-grove {:mvn/version "0.6.0"}}
+ {com.thheller/shadow-grove {:mvn/version "1.0.0"}}
 
  :aliases
  {:dev
   {:override-deps
    {com.thheller/shadow-grove {:local/root "../shadow-grove"}}
    :extra-deps
-   {thheller/shadow-cljs {:mvn/version "2.28.6"}}}}}
+   {thheller/shadow-cljs {:mvn/version "2.28.7"}}}}}
